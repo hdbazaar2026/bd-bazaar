@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#087f5b">
+<meta name="description" content="BD BAZAAR — বাংলাদেশের অনলাইন বাজার">
+<link rel="manifest" href="manifest.json">
+<title>BD BAZAAR — বাংলাদেশের অনলাইন বাজার</title>
+<style>
+:root{--green:#087f5b;--dark:#07543e;--bg:#f4f7f6;--ink:#17231f;--muted:#6b7772;--line:#e4ebe7;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans Bengali",sans-serif}
+header{background:linear-gradient(120deg,var(--dark),#0b9b70);color:white;padding:18px 16px 20px}
+.top{max-width:1050px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-weight:900;font-size:24px;letter-spacing:.3px}.tag{font-size:12px;opacity:.9}
+button,.btn{border:0;border-radius:12px;padding:11px 15px;font-weight:700;cursor:pointer;font:inherit}
+.sell{background:#fff;color:var(--dark)}.hero{max-width:1050px;margin:20px auto 0}.hero h1{font-size:clamp(23px,5vw,34px);margin:0 0 6px}.hero p{margin:0 0 15px;color:#e0fff2}
+.search{display:flex;background:white;border-radius:14px;padding:5px;max-width:650px}.search input{border:0;outline:0;flex:1;min-width:0;padding:10px;font:inherit}.search button{background:var(--green);color:white}
+main{max-width:1050px;margin:20px auto;padding:0 14px 90px}.section-head{display:flex;justify-content:space-between;align-items:center;margin:20px 0 12px}.section-head h2{font-size:19px;margin:0}.hint{font-size:12px;color:var(--muted)}
+.categories{display:flex;gap:9px;overflow:auto;padding-bottom:5px}.cat{background:white;border:1px solid var(--line);padding:10px 13px;border-radius:30px;white-space:nowrap;color:#34443d}.cat.active{background:#e0f5ec;border-color:#9bd7bb;color:var(--dark);font-weight:800}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:white;border:1px solid var(--line);border-radius:16px;overflow:hidden;min-width:0}.photo{height:140px;background:#e8f1ed;display:grid;place-items:center;font-size:54px}.info{padding:11px}.price{font-weight:900;color:var(--green);font-size:18px}.name{font-weight:700;margin:3px 0 7px;line-height:1.35}.meta{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:6px}.contact{display:block;text-align:center;text-decoration:none;background:#e8f7ef;color:var(--dark);font-weight:800;padding:9px;border-radius:10px;margin-top:10px;font-size:13px}
+.empty{grid-column:1/-1;text-align:center;padding:35px 15px;background:white;border-radius:16px;color:var(--muted)}
+footer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:center;gap:30px;padding:10px;z-index:5}
+footer a{color:var(--muted);text-decoration:none;font-size:12px;text-align:center}footer b{display:block;color:var(--green);font-size:18px}
+dialog{border:0;border-radius:18px;padding:0;width:min(92vw,480px);box-shadow:0 20px 70px #0003}dialog::backdrop{background:#10251dcc}.modal{padding:20px}.modal h2{margin:0 0 14px}.field{margin:11px 0}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:5px}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px;font:inherit;background:#fff}.actions{display:flex;gap:8px;margin-top:16px}.primary{background:var(--green);color:#fff;flex:1}.secondary{background:#edf1ef}
+.note{font-size:12px;color:var(--muted);line-height:1.5}
+@media(min-width:650px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.photo{height:175px}}
+@media(min-width:900px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<header>
+ <div class="top"><div><div class="brand">🛍️ BD BAZAAR</div><div class="tag">বাংলাদেশের অনলাইন বাজার</div></div><button class="sell" id="openSell">＋ পণ্য বিক্রি</button></div>
+ <div class="hero"><h1>কিনুন, বিক্রি করুন — সহজেই</h1><p>সারা বাংলাদেশের পণ্য এক জায়গায়</p>
+  <div class="search"><input id="search" placeholder="কী খুঁজছেন? যেমন: মোবাইল, জামা..." aria-label="পণ্য খুঁজুন"><button id="searchBtn">খুঁজুন</button></div>
+ </div>
+</header>
+<main>
+ <div class="section-head"><h2>ক্যাটাগরি</h2><span class="hint">আপনার পছন্দ বেছে নিন</span></div>
+ <div class="categories" id="categories"></div>
+ <div class="section-head"><h2 id="listingTitle">সাম্প্রতিক পণ্য</h2><span class="hint" id="count"></span></div>
+ <div class="grid" id="products"></div>
+ <p class="note">এটি BD BAZAAR-এর প্রাথমিক ডেমো। এই ব্রাউজারে পোস্ট করা পণ্য এই ডিভাইসেই সংরক্ষিত থাকে। সবার কাছে পণ্য দেখাতে পরবর্তী ধাপে অনলাইন ডাটাবেজ ও ব্যবহারকারী অ্যাকাউন্ট যুক্ত করতে হবে।</p>
+</main>
+<footer><a href="#"><b>⌂</b>হোম</a><a href="#categories"><b>▦</b>ক্যাটাগরি</a><a href="#" id="footerSell"><b>＋</b>বিক্রি</a><a href="#account"><b>♙</b>অ্যাকাউন্ট</a></footer>
+<dialog id="sellDialog"><form class="modal" id="sellForm">
+ <h2>নতুন পণ্য বিক্রি করুন</h2>
+ <div class="field"><label for="pname">পণ্যের নাম *</label><input id="pname" required maxlength="70" placeholder="যেমন: Samsung Galaxy ফোন"></div>
+ <div class="field"><label for="price">দাম (টাকা) *</label><input id="price" required type="number" min="1" placeholder="যেমন: 15000"></div>
+ <div class="field"><label for="category">ক্যাটাগরি *</label><select id="category" required></select></div>
+ <div class="field"><label for="district">জেলা *</label><input id="district" required placeholder="যেমন: ঢাকা"></div>
+ <div class="field"><label for="phone">যোগাযোগের মোবাইল নম্বর *</label><input id="phone" required inputmode="tel" placeholder="01XXXXXXXXX"></div>
+ <div class="field"><label for="emoji">পণ্যের আইকন</label><select id="emoji"><option>📦</option><option>📱</option><option>👕</option><option>🛋️</option><option>🚲</option><option>🥬</option><option>💻</option><option>🏠</option></select></div>
+ <p class="note">ডেমো সংস্করণে ছবি আপলোড নেই। আপনার বিজ্ঞাপন এই ডিভাইসের ব্রাউজারে থাকবে।</p>
+ <div class="actions"><button type="button" class="secondary" id="closeSell">বন্ধ</button><button class="primary" type="submit">বিজ্ঞাপন প্রকাশ করুন</button></div>
+</form></dialog>
+<script>
+const cats=["সব পণ্য","মোবাইল ও ইলেকট্রনিক্স","পোশাক ও ফ্যাশন","ফার্নিচার","গাড়ি ও বাইক","কৃষিপণ্য","হোম অ্যাপ্লায়েন্স","অন্যান্য"];
+const icons={"সব পণ্য":"🛍️","মোবাইল ও ইলেকট্রনিক্স":"📱","পোশাক ও ফ্যাশন":"👕","ফার্নিচার":"🛋️","গাড়ি ও বাইক":"🚲","কৃষিপণ্য":"🥬","হোম অ্যাপ্লায়েন্স":"🏠","অন্যান্য":"📦"};
+const demo=[
+ {name:"Samsung Galaxy স্মার্টফোন",price:18500,category:cats[1],district:"ঢাকা",phone:"01700000000",emoji:"📱"},
+ {name:"ছেলেদের ক্যাজুয়াল শার্ট",price:650,category:cats[2],district:"চট্টগ্রাম",phone:"01700000000",emoji:"👕"},
+ {name:"কাঠের স্টাডি টেবিল",price:4200,category:cats[3],district:"কুমিল্লা",phone:"01700000000",emoji:"🪑"},
+ {name:"তাজা দেশি সবজি",price:120,category:cats[5],district:"ময়মনসিংহ",phone:"01700000000",emoji:"🥬"}
+];
+let products=JSON.parse(localStorage.getItem("bdbazaar_products")||"null")||demo;
+let active="সব পণ্য";
+const categoryBox=document.getElementById("categories");
+const productBox=document.getElementById("products");
+function money(n){return "৳"+Number(n).toLocaleString("bn-BD")}
+function save(){localStorage.setItem("bdbazaar_products",JSON.stringify(products))}
+function renderCats(){
+ categoryBox.innerHTML="";
+ cats.forEach(c=>{const b=document.createElement("button");b.className="cat"+(active===c?" active":"");b.textContent=(icons[c]||"")+" "+c;b.onclick=()=>{active=c;renderCats();renderProducts()};categoryBox.appendChild(b)});
+}
+function renderProducts(){
+ const q=document.getElementById("search").value.trim().toLowerCase();
+ const list=products.filter(p=>(active==="সব পণ্য"||p.category===active)&&[p.name,p.district,p.category].join(" ").toLowerCase().includes(q));
+ document.getElementById("listingTitle").textContent=active==="সব পণ্য"?"সাম্প্রতিক পণ্য":active;
+ document.getElementById("count").textContent=list.length+"টি পণ্য";
+ productBox.innerHTML="";
+ if(!list.length){productBox.innerHTML='<div class="empty">😕<br>কোনো পণ্য পাওয়া যায়নি।<br>অন্য শব্দ দিয়ে খুঁজুন।</div>';return}
+ list.forEach(p=>{
+  const card=document.createElement("article");card.className="card";
+  const photo=document.createElement("div");photo.className="photo";photo.textContent=p.emoji||"📦";
+  const info=document.createElement("div");info.className="info";
+  const price=document.createElement("div");price.className="price";price.textContent=money(p.price);
+  const name=document.createElement("div");name.className="name";name.textContent=p.name;
+  const meta=document.createElement("div");meta.className="meta";meta.textContent="📍 "+p.district+" · "+p.category;
+  const a=document.createElement("a");a.className="contact";a.textContent="বিক্রেতার সাথে যোগাযোগ";a.href="https://wa.me/88"+String(p.phone).replace(/\D/g,"");a.target="_blank";a.rel="noopener";
+  info.append(price,name,meta,a);card.append(photo,info);productBox.append(card);
+ });
+}
+document.getElementById("searchBtn").onclick=renderProducts;
+document.getElementById("search").addEventListener("input",renderProducts);
+const dlg=document.getElementById("sellDialog");
+function openDialog(){dlg.showModal()}
+document.getElementById("openSell").onclick=openDialog;
+document.getElementById("footerSell").onclick=e=>{e.preventDefault();openDialog()};
+document.getElementById("closeSell").onclick=()=>dlg.close();
+const catSelect=document.getElementById("category");
+cats.slice(1).forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;catSelect.append(o)});
+document.getElementById("sellForm").onsubmit=e=>{
+ e.preventDefault();
+ const p={name:document.getElementById("pname").value.trim(),price:Number(document.getElementById("price").value),category:catSelect.value,district:document.getElementById("district").value.trim(),phone:document.getElementById("phone").value.trim(),emoji:document.getElementById("emoji").value};
+ if(!/^01[3-9]\d{8}$/.test(p.phone)){alert("সঠিক ১১ সংখ্যার বাংলাদেশি মোবাইল নম্বর দিন।");return}
+ products.unshift(p);save();active="সব পণ্য";renderCats();renderProducts();dlg.close();e.target.reset();alert("আপনার বিজ্ঞাপন এই ডিভাইসে যোগ হয়েছে।");
+};
+renderCats();renderProducts();
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}))}
+</script>
+</body></html>
